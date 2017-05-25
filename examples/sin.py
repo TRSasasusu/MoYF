@@ -10,9 +10,9 @@ def main():
 
     model = nn.Model(optimizer=nn.Sgd, loss=common.mse)
 
-    model.layer.add(nn.Layer(input_num=1, output_num=5, activate=common.relu))
-    model.layer.add(nn.Layer(output_num=4, activate=common.relu))
-    model.layer.add(nn.Layer(output_num=1, activate=common.linear))
+    model.layers.add(nn.Layer(input_num=1, output_num=5, activate=common.relu))
+    model.layers.add(nn.Layer(output_num=4, activate=common.relu))
+    model.layers.add(nn.Layer(output_num=1, activate=common.linear))
 
     model.learn(input_train=x_train, output_train=y_train, epoch_num=5, batch_num=6)
 
