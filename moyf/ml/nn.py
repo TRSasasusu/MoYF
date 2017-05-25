@@ -66,6 +66,18 @@ class Model:
                 weights[i] -= learning_rate * dif_weights[i]
                 biases[i] -= learning_rate * dif_biases[i]
 
+    def result(self, input_result):
+        last_outputs = []
+
+        for input_result_unit in input_result:
+            previous_output = input_result
+            for layer, weight, bias in zip(self.layers.layers, self.layers.weights, self.layers.biases):
+                not_activated_output = weight.dot(previous_output) + bias
+                previous_output = layer.activate(not_activated_output)
+            last_outputs.append(previous_output)
+
+        return np.array(last_outputs)
+
 class Layer:
     def __init__(self, input_num=None, output_num, activate):
         self.input_num = input_num
