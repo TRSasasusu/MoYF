@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import numpy as np
+from . import common
 
 class Model:
     class Layers:
@@ -23,17 +24,47 @@ class Model:
         self.loss = loss
         self.layers = Layers()
 
-    def learn(self, input_train, output_train, epoch_num):
+    def learn(self, input_train, output_train, epoch_num, learning_rate=0.01):
         for epoch in range(epoch_num):
+            last_outputs = []
+            not_activated_outputs = []
             outputs = []
-            for input_train_unit in input_train:
-                previous_output = input_train_unit
-                for layer, weight, bias in zip(self.layers, self.weights, self.biases):
-                    not_activated_output = weight.dot(previous_output) + bias
-                    previous_output = layer.activate(not_activated_output)
-                outputs.append(previous_output)
-
             
+            for input_train_unit in input_train:
+                not_activated_outputs_unit = []
+                outputs_unit = []
+
+                previous_output = input_train_unit
+                for layer, weight, bias in zip(self.layers.layers, self.layers.weights, self.layers.biases):
+                    not_activated_output = weight.dot(previous_output) + bias
+                    not_activated_outputs_unit.append(not_activated_output)
+
+                    previous_output = layer.activate(not_activated_output)
+                    outputs_unit.append(previous_output)
+
+                not_activated_outputs.append(np.array(not_activated_outputs_unit))
+                outputs.append(np.array(outputs_unit))
+
+                last_outputs.append(previous_output)
+
+            # Backpropagation
+            deltas = []
+            dif_weights = []
+            dif_biases = []
+
+            # delta L(length - 1)
+            deltas.append(output_train - last_outputs)
+
+            length = len(self.layers.layers)
+            for i in range(length):
+                deltas.insert(0, common.dif(self.loss, not_activated_outputs[length - i - 2]) * (self.layers.weights[length - i - 1].dot(deltas[0])))
+
+                dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - i - 3].transpose()))
+                dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
+
+            for i in range(length):
+                weights[i] -= learning_rate * dif_weights[i]
+                biases[i] -= learning_rate * dif_biases[i]
 
 class Layer:
     def __init__(self, input_num=None, output_num, activate):
