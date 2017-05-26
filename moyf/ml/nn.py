@@ -74,7 +74,10 @@ class Model:
                 #import ipdb; ipdb.set_trace()
                 deltas.insert(0, not_activated_outputs[length - i - 2][0] * (self.layers.weights[length - i - 1].transpose().dot(deltas[0])))
 
-                dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - i - 3][0].transpose()))
+                if length - i - 3 < 0:
+                    dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(input_train.reshape(len(input_train), 1)))
+                else:
+                    dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - i - 3][0].transpose()))
                 dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
 
                 if length - i - 2 == 0:
@@ -82,8 +85,16 @@ class Model:
 
             for i in range(length):
 #                import ipdb; ipdb.set_trace()
-                self.layers.weights[i] -= learning_rate * dif_weights[i]
-                self.layers.biases[i] -= learning_rate * dif_biases[i]
+                self.layers.weights[i] += learning_rate * dif_weights[i]
+                self.layers.biases[i] += learning_rate * dif_biases[i]
+
+            print("E = %s" % self.loss(output_train=output_train, last_outputs=last_outputs))
+            print("dif_weights:")
+            print(dif_weights)
+            print("weights:")
+            print(self.layers.weights)
+            print("biases:")
+            print(self.layers.biases)
 
     def result(self, input_result):
         last_outputs = []

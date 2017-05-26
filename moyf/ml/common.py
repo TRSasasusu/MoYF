@@ -2,8 +2,11 @@
 
 import numpy as np
 
-def mse():
-    pass
+def mse(output_train, last_outputs):
+    total = 0.
+    for output_train_unit, last_output in zip(output_train, last_outputs):
+        total += np.linalg.norm(output_train_unit - last_output) ** 2
+    return 1 / (2 * len(output_train)) * total
 
 def relu(x):
     return np.array([0 if value <= 0 else value for value in x])
