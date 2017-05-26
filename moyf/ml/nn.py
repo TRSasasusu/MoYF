@@ -47,12 +47,9 @@ class Model:
                     if len(not_activated_outputs[i]) == 0:
                         not_activated_outputs[i].append(not_activated_output)
                         outputs[i].append(previous_output.reshape(len(previous_output), 1))
-                        #outputs_unit.append(previous_outputs)
                     else:
                         not_activated_outputs[i] = [np.hstack((not_activated_outputs[i][0], not_activated_output))]
                         outputs[i] = [np.hstack((outputs[i][0], previous_output.reshape(len(previous_output), 1)))]
-#                not_activated_outputs.append(np.array(not_activated_outputs_unit))
-#                outputs.append(np.array(outputs_unit))
 
                 last_outputs.append(previous_output)
 
@@ -70,7 +67,6 @@ class Model:
             for i in range(length):
                 for k in range(len(not_activated_outputs[length - i - 2][0])):
                     not_activated_outputs[length - i - 2][0][k] = common.dif(self.layers.layers[length - i - 2].activate, not_activated_outputs[length - i - 2][0][k])
-                    #not_activated_outputs[j] = common.dif(self.loss, not_activated_outputs[length - i - 2][j])
                 #import ipdb; ipdb.set_trace()
                 deltas.insert(0, not_activated_outputs[length - i - 2][0] * (self.layers.weights[length - i - 1].transpose().dot(deltas[0])))
 
@@ -89,8 +85,8 @@ class Model:
                 self.layers.biases[i] += learning_rate * dif_biases[i]
 
             print("E = %s" % self.loss(output_train=output_train, last_outputs=last_outputs))
-            print("dif_weights:")
-            print(dif_weights)
+#            print("dif_weights:")
+#            print(dif_weights)
             print("weights:")
             print(self.layers.weights)
             print("biases:")
