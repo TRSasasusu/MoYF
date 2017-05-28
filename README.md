@@ -3,5 +3,7 @@
 ## Usage
 sin.py is an example.
 ## Examples
-* sin.py
+* sin.py  
 ![sin.py](imgs/sin.png)
+## License
+Mozilla Public License 2.0
