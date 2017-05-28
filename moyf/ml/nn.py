@@ -53,6 +53,7 @@ class Model:
                         outputs[i] = [np.hstack((outputs[i][0], previous_output.reshape(len(previous_output), 1)))]
 
                 last_outputs.append(previous_output)
+            last_outputs = np.array(last_outputs)
 
             # Backpropagation
             deltas = []
@@ -61,7 +62,7 @@ class Model:
 
             # delta L(length - 1)
             length = len(self.layers.layers)
-            deltas.append((output_train - np.array(last_outputs)).transpose())
+            deltas.append((output_train - last_outputs).transpose())
             dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - 2][0].transpose()))
             dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
 
