@@ -27,6 +27,7 @@ class Model:
         self.layers = Model.Layers()
 
     def learn(self, input_train, output_train, epoch_num, learning_rate=0.01):
+#        import ipdb; ipdb.set_trace()
         for epoch in range(epoch_num):
             last_outputs = []
             not_activated_outputs = [[] for i in self.layers.layers]
@@ -60,14 +61,14 @@ class Model:
 
             # delta L(length - 1)
             length = len(self.layers.layers)
-            deltas.append((output_train - np.array(last_outputs).transpose()))
+            deltas.append((output_train - np.array(last_outputs)).transpose())
             dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - 2][0].transpose()))
             dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
 
             for i in range(length):
                 for k in range(len(not_activated_outputs[length - i - 2][0])):
                     not_activated_outputs[length - i - 2][0][k] = common.dif(self.layers.layers[length - i - 2].activate, not_activated_outputs[length - i - 2][0][k])
-                #import ipdb; ipdb.set_trace()
+#                import ipdb; ipdb.set_trace()
                 deltas.insert(0, not_activated_outputs[length - i - 2][0] * (self.layers.weights[length - i - 1].transpose().dot(deltas[0])))
 
                 if length - i - 3 < 0:
