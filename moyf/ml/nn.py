@@ -33,11 +33,13 @@ class Model:
             not_activated_outputs = [[] for i in self.layers.layers]
             outputs = [[] for i in self.layers.layers]
             
+#            import ipdb; ipdb.set_trace()
             for input_train_unit in input_train:
                 not_activated_outputs_unit = []
                 outputs_unit = []
 
-                previous_output = np.array([input_train_unit])
+#                previous_output = np.array([input_train_unit])
+                previous_output = input_train_unit
                 for layer, weight, bias, i in zip(self.layers.layers, self.layers.weights, self.layers.biases, range(len(self.layers.layers))):
 #                    import ipdb; ipdb.set_trace()
                     not_activated_output = weight.dot(previous_output.reshape(len(previous_output), 1)) + bias
@@ -73,6 +75,7 @@ class Model:
                 deltas.insert(0, not_activated_outputs[length - i - 2][0] * (self.layers.weights[length - i - 1].transpose().dot(deltas[0])))
 
                 if length - i - 3 < 0:
+#                    import ipdb; ipdb.set_trace()
                     dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(input_train.reshape(len(input_train), 1)))
                 else:
                     dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - i - 3][0].transpose()))
