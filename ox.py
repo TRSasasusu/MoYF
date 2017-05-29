@@ -22,11 +22,11 @@ def main():
 
     model = nn.Model(loss=common.cross_entropy)
 
-    model.layers.add(nn.Layer(input_num=64*64, output_num=800, activate=common.relu))
-    model.layers.add(nn.Layer(output_num=200, activate=common.relu))
+    model.layers.add(nn.Layer(input_num=64*64, output_num=32*32, activate=common.relu))
+#    model.layers.add(nn.Layer(output_num=256, activate=common.relu))
     model.layers.add(nn.Layer(output_num=2, activate=common.softmax))
 
-    model.learn(input_train=input_train, output_train=output_train, epoch_num=1000)
+    model.learn(input_train=input_train, output_train=output_train, epoch_num=100, learning_rate=0.1)
 
     output_result = model.result(input_result=input_result)
 

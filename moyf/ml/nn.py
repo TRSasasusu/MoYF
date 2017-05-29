@@ -69,6 +69,7 @@ class Model:
                 if length - i - 2 == 0:
                     break
 
+            #import ipdb; ipdb.set_trace()
             for i in range(length):
                 self.layers.weights[i] += learning_rate * dif_weights[i]
                 self.layers.biases[i] += learning_rate * dif_biases[i]
