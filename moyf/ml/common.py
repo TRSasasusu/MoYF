@@ -21,7 +21,7 @@ def constant_one(x):
     return np.ones_like(x)
 
 def softmax(x):
-    return x / x.sum(axis=1).reshape(len(x), 1)
+    return np.exp(x) / np.exp(x).sum(axis=0)
 
 def dif(func, x):
     if func == relu:
