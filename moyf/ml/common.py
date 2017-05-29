@@ -9,20 +9,19 @@ def cross_entropy(output_train, last_outputs):
     return -(output_train * np.log(last_outputs)).sum()
 
 def relu(x):
-    return np.array([0 if value <= 0 else value for value in x])
+    return np.maximum(x, 0)
 
 def heaviside_step(x):
-    return np.array([0 if value <= 0 else 1 for value in x])
+    return (np.sign(x) + 1) * 0.5
 
 def linear(x):
     return x
 
 def constant_one(x):
-    return np.ones(shape=(1, len(x)))
+    return np.ones_like(x)
 
 def softmax(x):
-    total = np.exp(x).sum()
-    return x / total
+    return x / x.sum(axis=1)
 
 def dif(func, x):
     if func == relu:
