@@ -38,65 +38,13 @@ class Model:
 
             for layer, weight, bias in zip(self.layers.layers, self.layers.weights, self.layers.biases):
                 not_activated_outputs.append(np.array(weight.dot(previous_output) + bias.dot(np.ones(shape=(1, len(input_train))))))
-#                if not_activated_outputs is None:
-#                    not_activated_outputs = np.array([weight.dot(previous_output) + bias.dot(np.ones(shape=(1, len(input_train))))])
-#                else:
-#                    import ipdb; ipdb.set_trace()
-#                    np.vstack((not_activated_outputs, [weight.dot(previous_output) + bias.dot(np.ones(shape=(1, len(input_train))))]))
-
                 outputs.append(np.array(layer.activate(not_activated_outputs[-1])))
-#                if outputs is None:
-#                    outputs = np.array([layer.activate(not_activated_outputs[-1])])
-#                else:
-#                    np.vstack((outputs, [layer.activate(not_activated_outputs[-1])]))
 
                 previous_output = outputs[-1]
 
             # last_outputs: array([[], [], ..., []])
             last_outputs = previous_output
-            '''
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#            last_outputs = np.empty(shape=(1, output_trai
-            last_outputs = None
-            not_activated_outputs = [[] for i in self.layers.layers]
-            outputs = [[] for i in self.layers.layers]
-            
-#            import ipdb; ipdb.set_trace()
-            for input_train_unit in input_train:
-                previous_output = input_train_unit
-                for layer, weight, bias, i in zip(self.layers.layers, self.layers.weights, self.layers.biases, range(len(self.layers.layers))):
-#                    import ipdb; ipdb.set_trace()
-                    not_activated_output = weight.dot(previous_output.reshape(len(previous_output), 1)) + bias
-
-                    previous_output = layer.activate(not_activated_output.transpose()[0]).transpose()
-#                    import ipdb; ipdb.set_trace()
-
-                    if len(not_activated_outputs[i]) == 0:
-                        not_activated_outputs[i].append(not_activated_output)
-                        outputs[i].append(previous_output.reshape(len(previous_output), 1))
-                    else:
-                        not_activated_outputs[i] = [np.hstack((not_activated_outputs[i][0], not_activated_output))]
-                        outputs[i] = [np.hstack((outputs[i][0], previous_output.reshape(len(previous_output), 1)))]
-
-                if last_outputs is None:
-                    last_outputs = previous_output
-                else:
-                    last_output.vstack(previous_output)
-            '''
             # Backpropagation
             deltas = []
             dif_weights = []
@@ -109,15 +57,12 @@ class Model:
             dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
 
             for i in range(length):
-#                for k in range(len(not_activated_outputs[length - i - 2][0])):
-#                    not_activated_outputs[length - i - 2][0][k] = common.dif(self.layers.layers[length - i - 2].activate, not_activated_outputs[length - i - 2][0][k])
                 not_activated_outputs[length - i - 2] = common.dif(self.layers.layers[length - i - 2].activate, not_activated_outputs[length - i - 2])
                 deltas.insert(0, not_activated_outputs[length - i - 2] * (self.layers.weights[length - i - 1].transpose().dot(deltas[0])))
 
                 if length - i - 3 < 0:
                     dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(input_train))
                 else:
-#                    import ipdb; ipdb.set_trace()
                     dif_weights.insert(0, (1 / len(input_train)) * deltas[0].dot(outputs[length - i - 3].transpose()))
                 dif_biases.insert(0, (1 / len(input_train)) * deltas[0].dot(np.ones(shape=(len(input_train), 1))))
 
@@ -125,7 +70,6 @@ class Model:
                     break
 
             for i in range(length):
-#                import ipdb; ipdb.set_trace()
                 self.layers.weights[i] += learning_rate * dif_weights[i]
                 self.layers.biases[i] += learning_rate * dif_biases[i]
 
