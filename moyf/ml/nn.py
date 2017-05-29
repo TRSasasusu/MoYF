@@ -82,17 +82,13 @@ class Model:
             print(self.layers.biases)
 
     def result(self, input_result):
-        last_outputs = []
+        previous_output = input_result.T
 
-        for input_result_unit in input_result:
-            previous_output = np.array([input_result_unit])
-            for layer, weight, bias in zip(self.layers.layers, self.layers.weights, self.layers.biases):
-#                import ipdb; ipdb.set_trace()
-                not_activated_output = weight.dot(previous_output.reshape(len(previous_output), 1)) + bias
-                previous_output = layer.activate(not_activated_output.transpose()[0]).transpose()
-            last_outputs.append(previous_output)
+        for layer, weight, bias in zip(self.layers.layers, self.layers.weights, self.layers.biases):
+            not_activated_output = np.array(weight.dot(previous_output) + bias.dot(np.ones(shape=(1, len(input_result)))))
+            previous_output = np.array(layer.activate(not_activated_output))
 
-        return np.array(last_outputs)
+        return previous_output.T
 
 class Layer:
     def __init__(self, activate, output_num, input_num=None):
