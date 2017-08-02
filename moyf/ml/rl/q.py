@@ -34,7 +34,8 @@ class Q:
             next_agent_state, reward = self.states_to_states_with_rewards[agent_state][action_index]
 
             if len(self.action_value_function[next_agent_state]) == 0:
-                max_next_action_value_function = 0
+                max_next_action_value_function = self.action_value_function[agent_state][action_index]
+                #max_next_action_value_function = 0
             else:
                 max_next_action_value_function = max(self.action_value_function[next_agent_state])
 
@@ -43,3 +44,15 @@ class Q:
                     )
 
             agent_state = next_agent_state
+
+    def print_action_value_function(self, place, is_line_broken=True):
+        print('[', end='')
+        for row in self.action_value_function:
+            print('[', end='')
+            for value in row:
+                print('{0:.{1}f}, '.format(value, place), end='')
+            print('], ', end='')
+        print(']', end='')
+
+        if is_line_broken:
+            print('')
