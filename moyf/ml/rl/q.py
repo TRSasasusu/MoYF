@@ -20,9 +20,12 @@ class Q:
         self.states_to_states_with_rewards = states_to_states_with_rewards
         self.action_value_function = [[random.randint(*Q.RANDOM_RANGE) for i in to_states_with_rewards] for to_states_with_rewards in self.states_to_states_with_rewards]
 
-    def epsilon_greedy(self, epsilon, learning_rate, discount_rate, limit=100):
+    def epsilon_greedy(self, epsilon, learning_rate, discount_rate, limit=100, callback=None):
         agent_state = 0
         for i in range(100):
+            if callback is not None:
+                callback(agent_state)
+
             if len(self.states_to_states_with_rewards[agent_state]) == 0:
                 break
 
