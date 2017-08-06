@@ -21,10 +21,9 @@ def expected_values_callback(state, theta):
     if state['is_jumping']:
         return [1.0, 0.0]
     return [theta_row[0] * (state['hole_start'] - state['x']) + theta_row[1] for theta_row in theta]
-    #return (state['hole_start'] - state['x']) * theta
 
 def calc_state_reward_callback(action, state):
-    if trial_number % 100 == 0:
+    if trial_number % 10 == 0:
         pygame.display.set_caption("REINFORCE-Algorithm trial: {0}".format(trial_number))
         screen.fill((255, 255, 255))
 
@@ -62,14 +61,16 @@ def calc_state_reward_callback(action, state):
     elif action == 1:
         state['is_jumping'] = True
         state['jump_start_time'] = state['time']
+        return state, -10, False
 
     if state['x'] >= state['hole_start'] and state['y'] <= 0:
         return state, -100, True
     if state['x'] >= state['ground_start']:
         state['hole_start'] = ENVIRONMENT.find(' ', int(state['x']))
         state['ground_start'] = ENVIRONMENT.find('#', state['hole_start'])
+        return state, 100, False
 
-    return state, state['x'], False
+    return state, 0, False
 
 def main():
     rf = reinforce.REINFORCE(
@@ -96,7 +97,7 @@ def main():
     for i in range(10000):
         global trial_number
         trial_number = i
-        if trial_number % 100 == 0:
+        if trial_number % 10 == 0:
             print('{0}: {1}'.format(i, rf.theta))
         rf.update(start_state=start_state, learning_rate=0.1, episode_num=1)
     print('result: {0}'.format(rf.theta))
