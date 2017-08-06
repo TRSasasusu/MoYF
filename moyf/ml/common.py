@@ -28,5 +28,6 @@ def dif(func, x):
         return heaviside_step(x)
     if func == linear:
         return constant_one(x)
-    print('The differentiation of the function is not implemented.')
-    return x;
+
+    h = 0.0001
+    return (func(x + h) - func(x - h)) / (2 * h)
