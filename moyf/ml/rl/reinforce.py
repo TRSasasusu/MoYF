@@ -5,7 +5,7 @@ import copy
 import numpy as np
 
 class REINFORCE:
-    RANDOM_RANGE = 200
+    RANDOM_RANGE = 2
     DIFF_H = 0.0001
 
     @staticmethod
@@ -40,7 +40,7 @@ class REINFORCE:
                 expected_values = self.expected_values_callback(state, self.theta)
                 policies = self.policy_callback(expected_values)
                 action = self.decide_action_callback(policies)
-                state, reward, is_end = self.calc_state_reward_callback(action, copy.deepcopy(state), self.theta)
+                state, reward, is_end = self.calc_state_reward_callback(action, copy.deepcopy(state))
                 rewards[m].append(reward)
                 actions[m].append(action)
                 states[m].append(state)
@@ -48,7 +48,7 @@ class REINFORCE:
                     break
             time_lengths.append(t + 1)
 
-        #import bpdb; bpdb.set_trace()
+#        import bpdb; bpdb.set_trace()
 
         mean_rewards = reduce(lambda x, y: x + y, [sum(partial_rewards) for partial_rewards in rewards]) / sum(time_lengths)
         gradient = np.zeros(shape=self.theta.shape)
@@ -68,7 +68,7 @@ class REINFORCE:
 
                         policy_gradient[i][j] = (np.log(right_policy) - np.log(left_policy)) / (2 * REINFORCE.DIFF_H)
 
-                #import bpdb; bpdb.set_trace()
+#                import bpdb; bpdb.set_trace()
                 gradient += (rewards[m][t] - mean_rewards) * policy_gradient
 
         self.theta += learning_rate * gradient
