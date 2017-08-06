@@ -15,8 +15,12 @@ class REINFORCE:
         return values / np.sum(values)
 
     @staticmethod
-    def decide_action(policy_values):
+    def decide_action_absolutely(policy_values):
         return np.argmax(policy_values)
+
+    @staticmethod
+    def decide_action(policy_values):
+        return np.random.choice(len(policy_values), 1, p=policy_values).item()
 
     def __init__(self, expected_values_callback, decide_action_callback, calc_state_reward_callback, theta_dim, policy_callback):
         self.expected_values_callback = expected_values_callback

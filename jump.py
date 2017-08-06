@@ -93,7 +93,7 @@ def main():
     global screen
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
-    for i in range(1000):
+    for i in range(10000):
         global trial_number
         trial_number = i
         if trial_number % 100 == 0:
