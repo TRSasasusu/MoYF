@@ -42,7 +42,7 @@ def main():
             reinforce.REINFORCE.decide_action,
             calc_state_reward_callback,
             [2, 1],
-            REINFORCE.policy_softmax
+            reinforce.REINFORCE.policy_softmax
             )
     start_state={
             'x': 0.0,
@@ -53,9 +53,10 @@ def main():
             'hole_start': ENVIRONMENT.find(' '),
             }
     start_state['ground_start'] = ENVIRONMENT.find('#', start_state['hole_start'])
-    print('{0}'.format(rf.theta))
-    rf.update(start_state=start_state, learning_rate=0.1, episode_num=1)
-    print('{0}'.format(rf.theta))
+    for i in range(100):
+        print('{0}: {1}'.format(i, rf.theta))
+        rf.update(start_state=start_state, learning_rate=0.1, episode_num=1)
+    print('result: {0}'.format(rf.theta))
 
 if __name__ == '__main__':
     main()

@@ -1,8 +1,8 @@
 # coding: utf-8
 
 from functools import reduce
+import copy
 import numpy as np
-from moyf.ml.common import diff
 
 class REINFORCE:
     RANDOM_RANGE = 200
@@ -16,7 +16,7 @@ class REINFORCE:
 
     @staticmethod
     def decide_action(policy_values):
-        return argmax(policy_values)
+        return np.argmax(policy_values)
 
     def __init__(self, expected_values_callback, decide_action_callback, calc_state_reward_callback, theta_dim, policy_callback):
         self.expected_values_callback = expected_values_callback
@@ -37,10 +37,10 @@ class REINFORCE:
             state = start_state
             states[m].append(state)
             for t in range(limit):
-                expected_values = self.policy_callback(state, self.theta)
+                expected_values = self.expected_values_callback(state, self.theta)
                 policies = self.policy_callback(expected_values)
-                action = decide_action_callback(policies)
-                state, reward, is_end = calc_state_reward_callback(action, state, self.theta)
+                action = self.decide_action_callback(policies)
+                state, reward, is_end = self.calc_state_reward_callback(action, copy.deepcopy(state), self.theta)
                 rewards[m].append(reward)
                 actions[m].append(action)
                 states[m].append(state)
@@ -48,24 +48,27 @@ class REINFORCE:
                     break
             time_lengths.append(t + 1)
 
+        #import bpdb; bpdb.set_trace()
+
         mean_rewards = reduce(lambda x, y: x + y, [sum(partial_rewards) for partial_rewards in rewards]) / sum(time_lengths)
-        gradient = np.zeros(shape=theta_dim)
+        gradient = np.zeros(shape=self.theta.shape)
         for m in range(episode_num):
             for t in range(time_lengths[m]):
-                policy_gradient = np.zeros(shape=theta_dim)
-                for i, theta_row in enumerate(theta):
+                policy_gradient = np.zeros(shape=self.theta.shape)
+                for i, theta_row in enumerate(self.theta):
                     for j, theta_row_elem in enumerate(theta_row):
                         tmp_theta = self.theta.copy()
-                        tmp_theta[i][j] -= DIFF_H
-                        left_expected_values = self.policy_callback(states[m][t], tmp_theta)
-                        tmp_theta[i][j] += DIFF_H * 2
-                        right_expected_values = self.policy_callback(states[m][t], tmp_theta)
+                        tmp_theta[i][j] -= REINFORCE.DIFF_H
+                        left_expected_values = self.expected_values_callback(states[m][t], tmp_theta)
+                        tmp_theta[i][j] += REINFORCE.DIFF_H * 2
+                        right_expected_values = self.expected_values_callback(states[m][t], tmp_theta)
 
                         left_policy = self.policy_callback(left_expected_values)[actions[m][t]]
                         right_policy = self.policy_callback(right_expected_values)[actions[m][t]]
 
-                        policy_gradient[i][j] = (np.log(right_policy) - np.log(left_policy)) / (2 * DIFF_H)
+                        policy_gradient[i][j] = (np.log(right_policy) - np.log(left_policy)) / (2 * REINFORCE.DIFF_H)
 
+                #import bpdb; bpdb.set_trace()
                 gradient += (rewards[m][t] - mean_rewards) * policy_gradient
 
         self.theta += learning_rate * gradient
