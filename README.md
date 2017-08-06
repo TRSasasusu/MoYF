@@ -1,6 +1,6 @@
 # MoYF
-諸事情により突発的に作ったニューラルネットワークライブラリ．
-加えて，Q学習．
+諸事情により突発的に作ったニューラルネットワークライブラリ．  
+加えて，Q学習やREINFORCEアルゴリズムのような強化学習．
 ## Usage
 sin.py is an example.
 ## Examples
@@ -46,6 +46,9 @@ x18.png: [  4.12645066e-69   1.00000000e+00]
 
 * q_maze2.py  
 [![Q-Learning](http://img.youtube.com/vi/4qWrmaR-yDw/0.jpg)](http://www.youtube.com/watch?v=4qWrmaR-yDw)
+
+* jump.py  
+[![REINFORCE-Algorithm](http://img.youtube.com/vi/8cT78AvDTyI/0.jpg)](http://www.youtube.com/watch?v=8cT78AvDTyI)
 
 ## License
 Mozilla Public License 2.0
