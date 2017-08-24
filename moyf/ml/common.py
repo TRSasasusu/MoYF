@@ -20,8 +20,14 @@ def linear(x):
 def constant_one(x):
     return np.ones_like(x)
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
 def softmax(x):
-    return np.exp(x) / np.exp(x).sum(axis=0)
+    max_value = max(x)
+    values = np.exp(x - max_value)
+    return values / np.sum(values)
+#    return np.exp(x) / np.exp(x).sum(axis=0)
 
 def dif(func, x):
     if func == relu:
